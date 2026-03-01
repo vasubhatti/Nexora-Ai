@@ -3,7 +3,7 @@ import connectDB from "./config/database.js";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import helmet from "helmet";
-import morgan from "morgan";
+// import morgan from "morgan";
 import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,8 +29,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 connectDB();
 
-// Sanitize MongoDB queries — prevents NoSQL injection
-app.use(mongoSanitize());
 
 // Prevent HTTP parameter pollution
 app.use(hpp());
