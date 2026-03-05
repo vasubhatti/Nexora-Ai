@@ -1,6 +1,5 @@
 import express from "express";
 import connectDB from "./config/database.js";
-import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import helmet from "helmet";
 // import morgan from "morgan";

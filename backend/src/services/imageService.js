@@ -1,6 +1,6 @@
 import AppError from "../utils/AppError.js";
 
-const POLLINATIONS_IMAGE_URL = "https://image.pollinations-ai.com/prompt";
+const POLLINATIONS_IMAGE_URL = "https://gen.pollinations.ai/image";
 
 const buildImageUrl = (prompt, options = {}) => {
   const encodedPrompt = encodeURIComponent(prompt);
@@ -9,13 +9,12 @@ const buildImageUrl = (prompt, options = {}) => {
     height: options.height || 1024,
     model: options.model || "flux",
     seed: Math.floor(Math.random() * 99999),
-    nologo: true,
-    private: true,
+    enhance: true,
   });
 
   // Add token only if it exists
   if (process.env.POLLINATIONS_TOKEN) {
-    params.append("token", process.env.POLLINATIONS_TOKEN);
+    params.append("key", process.env.POLLINATIONS_TOKEN);
   }
 
   return `${POLLINATIONS_IMAGE_URL}/${encodedPrompt}?${params.toString()}`;

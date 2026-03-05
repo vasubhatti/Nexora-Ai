@@ -1,104 +1,101 @@
 import User from "../models/User.js";
 import CreditTransaction from "../models/CreditTransaction.js";
-import AppError from "../utils/AppError.js";
-import {SUBSCRIPTION_CREDITS} from "../config/creditCosts.js";
 
-// Check and reset credits if month has passed
-export const checkAndResetCredits = async (user)=> {
-    try {
-        const now = new Date();
-        if(now >= user.creditsResetDate){
-            const monthlyCredits = SUBSCRIPTION_CREDITS[user.subscription];
+export const checkAndResetCredits = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) return;
 
-            user.creditBalance = monthlyCredits;
-            user.creditsUsed = 0;
-            user.creditsResetDate = new Date(now.setMonth(now.getMonth() + 1));
-            await user.save({ validateBeforeSave: false });
+  const now = new Date();
+  const resetDate = new Date(user.creditsResetDate);
 
-            await CreditTransaction.create({
-                user: user._id,
-                type: "reset",
-                amount: monthlyCredits,
-                balanceAfter: monthlyCredits,
-                description: `Monthly credit reset - ${user.subscription} plan`
-            })
-        }
-        return user;
-    } catch (error) {
-        console.log(error);
-    }
-}
+  if (now >= resetDate) {
+    const planCredits = {
+      free: 100,
+      pro: 1000,
+      enterprise: 10000,
+    };
 
-export const deductCredits = async (userId,action,cost)=> {
-    try {
-        let user = await User.findById(userId);
-        if(!user) throw new AppError("User not found.", 404);
+    const newCredits = planCredits[user.subscription] || 100;
+    const nextReset = new Date();
+    nextReset.setMonth(nextReset.getMonth() + 1);
 
-        // Check and reset if needed
-        user = await checkAndResetCredits(user);
+    user.creditBalance = newCredits;
+    user.creditsUsed = 0;
+    user.creditsResetDate = nextReset;
+    await user.save({ validateBeforeSave: false });
 
-        // Check if enough credits
-        if(user.creditBalance < cost){
-            throw new AppError(
-                `Insufficient credits. You need ${cost} credits but have ${user.creditBalance}.`,
-                402
-            );
-        }
+    await CreditTransaction.create({
+      user: userId,
+      type: "reset",
+      amount: newCredits,
+      balanceAfter: newCredits,
+      description: `Monthly credit reset — ${user.subscription} plan`,
+      action: "MONTHLY_RESET",
+    });
+  }
 
-        //Deduct
-        user.creditBalance -= cost;
-        user.creditsUsed += cost;
-        await user.save({validateBeforeSave:false});
+  return user;
+};
 
-        //Log transaction
-        await CreditTransaction.create({
-            user: userId,
-            type: "deduction",
-            amount: cost,
-            balanceAfter: user.creditBalance,
-            description: `Used ${cost} credits for ${action}`,
-            action,
-        });
-        return user.creditBalance;
-    } catch (error) {
-        console.log(error)
-    }
-}
+export const deductCredits = async (userId, amount, description, action) => {
+  // Always fetch fresh from DB — never use cached user
+  const user = await User.findById(userId);
 
-// Add credits (top-up or bonus)
-export const addCredits = async (userId,amount,description,type = "topup")=> {
-    try {
-        let user = await User.findById(userId);
-        if(!user) throw new AppError("User not found.", 404);
+  if (!user) throw new Error("User not found");
 
-        user.creditBalance += amount;
-        await user.save({validateBeforeSave:false});
+  await checkAndResetCredits(userId);
 
-        await CreditTransaction.create({
-            user: user._id,
-            type,
-            amount,
-            balanceAfter : user.creditBalance,
-            description
-        })
-        return user.creditBalance;
-    } catch (error) {
-        console.log(error);
-    }
-}
+  // Re-fetch after potential reset
+  const freshUser = await User.findById(userId);
 
-export const getCreditBalance = async (userId)=> {
-    try {
-        let user = await User.findById(userId);
-        if(!user) throw new AppError("User not found.", 404);
+  if (freshUser.creditBalance < amount) {
+    const err = new Error("Insufficient credits");
+    err.statusCode = 402;
+    throw err;
+  }
 
-        return {
-            creditBalance: user.creditBalance,
-            creditsUsed: user.creditsUsed,
-            creditsResetDate: user.creditsResetDate,
-            subscription: user.subscription,
-        };
-    } catch (error) {
-        console.log(error)
-    }
-}
+  freshUser.creditBalance -= amount;
+  freshUser.creditsUsed += amount;
+  await freshUser.save({ validateBeforeSave: false });
+
+  await CreditTransaction.create({
+    user: userId,
+    type: "deduction",
+    amount: -amount,
+    balanceAfter: freshUser.creditBalance,
+    description,
+    action,
+  });
+
+  return freshUser.creditBalance;
+};
+
+export const addCredits = async (userId, amount, description, type = "topup") => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+
+  user.creditBalance += amount;
+  await user.save({ validateBeforeSave: false });
+
+  await CreditTransaction.create({
+    user: userId,
+    type,
+    amount,
+    balanceAfter: user.creditBalance,
+    description,
+    action: type.toUpperCase(),
+  });
+
+  return user.creditBalance;
+};
+
+export const getCreditBalance = async (userId) => {
+  await checkAndResetCredits(userId);
+  const user = await User.findById(userId);
+  return {
+    creditBalance: user.creditBalance,
+    creditsUsed: user.creditsUsed,
+    creditsResetDate: user.creditsResetDate,
+    subscription: user.subscription,
+  };
+};
