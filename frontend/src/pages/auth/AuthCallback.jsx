@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/common/LoadingSpinner.jsx";
 import api from "../../api/axios.js";
+import useAuthStore from "../../store/authStore.js";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -17,17 +18,25 @@ const AuthCallback = () => {
         return;
       }
 
-      // Save tokens
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // Fetch user info
       try {
         const { data } = await api.get("/auth/me");
+
+        // Save user to localStorage
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/dashboard");
+
+        // Manually update zustand store
+        useAuthStore.setState({
+          user: data.user,
+          isAuthenticated: true,
+        });
+
+        navigate("/dashboard", { replace: true });
       } catch {
-        navigate("/login");
+        localStorage.clear();
+        navigate("/login", { replace: true });
       }
     };
 
@@ -38,7 +47,7 @@ const AuthCallback = () => {
     <div className="dark min-h-screen bg-background flex items-center justify-center">
       <div className="text-center space-y-4">
         <LoadingSpinner size="lg" />
-        <p className="text-zinc-400 text-sm">Signing you in...</p>
+        <p className="text-zinc-400 text-sm">Signing you in with Google...</p>
       </div>
     </div>
   );

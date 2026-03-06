@@ -6,6 +6,8 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.set("trust proxy", 1); // Trust first proxy for rate limiting and secure cookies
+
 import healthRoute from "./routes/healthRoute.js";
 import authRoutes from "./routes/authRoutes.js";
 import creditRoutes from "./routes/creditRoutes.js";
