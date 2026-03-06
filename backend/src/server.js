@@ -2,13 +2,9 @@ import express from "express";
 import connectDB from "./config/database.js";
 import hpp from "hpp";
 import helmet from "helmet";
-// import morgan from "morgan";
 import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-import "./workers/textWorker.js"
-import "./workers/documentWorker.js"
 
 import healthRoute from "./routes/healthRoute.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -19,7 +15,7 @@ import generationRoutes from "./routes/generationRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js"
 import imageToTextRoutes from "./routes/imageToTextRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
-import jobRoutes from "./routes/jobRoutes.js"
+import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 
 import errorHandler from "./middleware/errorHandler.js";
 import { generalLimiter, authLimiter, aiLimiter } from "./middleware/rateLimiter.js";
@@ -53,7 +49,7 @@ app.use("/api/generations",generationRoutes);
 app.use("/api/image", imageRoutes);
 app.use("/api/image-to-text", imageToTextRoutes);
 app.use("/api/document", aiLimiter,documentRoutes);
-app.use("/api/jobs", jobRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 // 404 Handler
 app.use((req,res,next)=>{

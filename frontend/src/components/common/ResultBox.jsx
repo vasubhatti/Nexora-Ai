@@ -18,7 +18,7 @@ const ResultBox = ({ result, isJson = false }) => {
   };
 
   return (
-    <div className="mt-4 bg-gray-950 border border-gray-800 rounded-xl overflow-hidden">
+    <div className="mt-4 bg-zinc-900 border border-gray-800 rounded-xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2 border-b border-gray-800">
         <span className="text-xs font-medium text-gray-400">Result</span>
         <button

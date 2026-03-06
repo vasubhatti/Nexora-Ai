@@ -9,7 +9,7 @@ const checkCredits =  (action)=> {
             if(!cost) return next(new AppError("Invalid action type.", 400));
 
             // Deduct credits — throws if insufficient
-            const remainingCredits = await deductCredits(req.user.id,action,cost);
+            const remainingCredits = await deductCredits(req.user.id,cost,action);
 
             // Attach to request so controller knows cost and balance
             req.creditCost = cost;

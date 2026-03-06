@@ -37,15 +37,12 @@ export const checkAndResetCredits = async (userId) => {
   return user;
 };
 
-export const deductCredits = async (userId, amount, description, action) => {
-  // Always fetch fresh from DB — never use cached user
+export const deductCredits = async (userId, amount, action) => {
   const user = await User.findById(userId);
-
   if (!user) throw new Error("User not found");
 
   await checkAndResetCredits(userId);
 
-  // Re-fetch after potential reset
   const freshUser = await User.findById(userId);
 
   if (freshUser.creditBalance < amount) {
@@ -58,13 +55,17 @@ export const deductCredits = async (userId, amount, description, action) => {
   freshUser.creditsUsed += amount;
   await freshUser.save({ validateBeforeSave: false });
 
+  // Make sure amount is always a valid positive number
+  const safeAmount = Number(amount);
+  if (isNaN(safeAmount)) throw new Error("Invalid credit amount");
+
   await CreditTransaction.create({
     user: userId,
     type: "deduction",
-    amount: -amount,
+    amount: safeAmount,        // store as positive number
     balanceAfter: freshUser.creditBalance,
-    description,
-    action,
+    description:  "Credit deduction",
+    action: action || "UNKNOWN",
   });
 
   return freshUser.creditBalance;

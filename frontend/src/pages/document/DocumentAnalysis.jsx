@@ -170,7 +170,7 @@ const DocumentAnalysis = () => {
               {loading ? (
                 <LoadingSpinner size="sm" text="Analyzing document..." />
               ) : (
-                "Generate"
+                "Analyze Document"
               )}
             </button>
 
@@ -184,19 +184,19 @@ const DocumentAnalysis = () => {
           {result && activeTool === "keypoints" && typeof result === "object" && (
             <div className="space-y-3">
               {result.title && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-1">Document Title</p>
                   <p className="text-sm font-semibold text-white">{result.title}</p>
                 </div>
               )}
               {result.mainTheme && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-1">Main Theme</p>
                   <p className="text-sm text-gray-200">{result.mainTheme}</p>
                 </div>
               )}
               {result.keyPoints?.length > 0 && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-2">Key Points</p>
                   <ul className="space-y-1.5">
                     {result.keyPoints.map((point, i) => (
@@ -209,7 +209,7 @@ const DocumentAnalysis = () => {
                 </div>
               )}
               {result.conclusion && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-1">Conclusion</p>
                   <p className="text-sm text-gray-200">{result.conclusion}</p>
                 </div>
