@@ -22,6 +22,7 @@ import ImageGenerator from "./pages/image/ImageGenerator.jsx";
 import ImageToText from "./pages/image/ImageToText.jsx";
 import History from "./pages/history/History.jsx";
 import Subscription from "./pages/subscription/Subscription.jsx";
+import AuthCallback from "./pages/auth/AuthCallback.jsx";
 
 function App() {
   const { initTheme } = useThemeStore();
@@ -76,6 +77,7 @@ function App() {
         <Route path="/image-to-text/scan" element={<ProtectedRoute><ImageToText /></ProtectedRoute>} />
         <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
         <Route path="/subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

@@ -153,31 +153,21 @@ export const getMe = async (req,res,next)=>{
     }
 }
 
-export const googleCallback = async (req,res,next)=>{
-    try {
-        const user = req.user;
+export const googleCallback = async (req, res, next) => {
+  try {
+    const user = req.user;
 
-        const accessToken = generateAccessToken(user._id);
-        const refreshToken = generateRefreshToken(user._id)
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
 
-        user.refreshToken = refreshToken;
-         await user.save({ validateBeforeSave: false });
-        
-          res.json({
-            success: true,
-            message: "Google login successful",
-            accessToken,
-            refreshToken: refreshToken,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                credits: user.credits,
-                subscription: user.subscription,
-            },
-        });
-    } catch (error) {
-        next(error);
-    }
-}
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // Redirect to frontend with tokens in URL
+    res.redirect(
+      `${process.env.CLIENT_URL}/auth/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`
+    );
+  } catch (error) {
+    next(error);
+  }
+};
