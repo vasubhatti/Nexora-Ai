@@ -18,6 +18,7 @@ import imageRoutes from "./routes/imageRoutes.js"
 import imageToTextRoutes from "./routes/imageToTextRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 import errorHandler from "./middleware/errorHandler.js";
 import { generalLimiter, authLimiter, aiLimiter } from "./middleware/rateLimiter.js";
@@ -52,6 +53,7 @@ app.use("/api/image", imageRoutes);
 app.use("/api/image-to-text", imageToTextRoutes);
 app.use("/api/document", aiLimiter,documentRoutes);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/admin", adminRoutes);
 
 // 404 Handler
 app.use((req,res,next)=>{

@@ -56,7 +56,13 @@ export const login = async (req,res,next)=>{
         if(!user){
             return next(new AppError("Invalid email or password.", 401));
         }
-
+        //Check if user is banned
+        if(user.isBanned){
+            return res.status(403).json({
+                success: false,
+                message: "Your account has been banned. Please contact support.",
+            });
+        }
         //Check password
         const isMatch = await user.comparePassword(password);
         if(!isMatch){

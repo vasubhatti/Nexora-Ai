@@ -23,6 +23,10 @@ import ImageToText from "./pages/image/ImageToText.jsx";
 import History from "./pages/history/History.jsx";
 import Subscription from "./pages/subscription/Subscription.jsx";
 import AuthCallback from "./pages/auth/AuthCallback.jsx";
+import AdminLogin from "./admin/pages/AdminLogin.jsx";
+import AdminDashboard from "./admin/pages/AdminDashboard.jsx";
+import AdminUsers from "./admin/pages/AdminUsers.jsx";
+import AdminRoute from "./admin/components/AdminRoute.jsx";
 
 function App() {
   const { initTheme } = useThemeStore();
@@ -52,6 +56,15 @@ function App() {
               <Chat />
             </ProtectedRoute>
           }
+        />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={<AdminRoute><AdminDashboard /></AdminRoute>}
+        />
+        <Route
+          path="/admin/users"
+          element={<AdminRoute><AdminUsers /></AdminRoute>}
         />
         <Route path="/generate" element={<ProtectedRoute><ContentGenerator /></ProtectedRoute>} />
         <Route path="/summarize" element={<ProtectedRoute><Summarizer /></ProtectedRoute>} />
