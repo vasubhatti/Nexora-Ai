@@ -2,6 +2,7 @@ import { useState } from "react";
 import Layout from "../../components/common/Layout.jsx";
 import AIToolLayout from "../../components/common/AIToolLayout.jsx";
 import ResultBox from "../../components/common/ResultBox.jsx";
+import CommonResultBox from "@/components/common/CommonResultBox.jsx";
 import CreditBadge from "../../components/common/CreditBadge.jsx";
 import LoadingSpinner from "../../components/common/LoadingSpinner.jsx";
 import useCreditStore from "../../store/creditStore.js";
@@ -66,13 +67,13 @@ const CodeConverter = () => {
             className="w-full py-2.5 bg-white hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? (
-              <LoadingSpinner size="sm" text="Generating..." />
+              <LoadingSpinner size="sm" text="Converting..." />
             ) : (
-              "Generate"
+              "Convert Code"
             )}
           </button>
           {error && <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg"><p className="text-red-400 text-sm">{error}</p></div>}
-          <ResultBox result={result} />
+            <ResultBox result={result}/>
           <CreditBadge {...meta} />
         </div>
       </AIToolLayout>

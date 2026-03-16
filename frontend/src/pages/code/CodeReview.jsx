@@ -76,9 +76,9 @@ const CodeReview = () => {
             className="w-full py-2.5 bg-white hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? (
-              <LoadingSpinner size="sm" text="Generating..." />
+              <LoadingSpinner size="sm" text="Reviewing..." />
             ) : (
-              "Generate"
+              "Review Code"
             )}
           </button>
 
@@ -91,12 +91,12 @@ const CodeReview = () => {
           {result && typeof result === "object" && (
             <div className="space-y-3">
               {/* Score */}
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+              <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Code Quality Score</p>
                   <p className="text-sm text-gray-200">{result.summary}</p>
                 </div>
-                <div className={`text-3xl font-bold ${
+                <div className={`text-3xl font-bold mr-2 ${
                   result.score >= 80 ? "text-green-400" :
                   result.score >= 60 ? "text-yellow-400" : "text-red-400"
                 }`}>
@@ -106,7 +106,7 @@ const CodeReview = () => {
 
               {/* Issues */}
               {result.issues?.length > 0 && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
                     <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
                     Issues ({result.issues.length})
@@ -126,7 +126,7 @@ const CodeReview = () => {
 
               {/* Suggestions */}
               {result.suggestions?.length > 0 && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
                     <Lightbulb className="w-3.5 h-3.5 text-yellow-400" />
                     Suggestions
@@ -143,7 +143,7 @@ const CodeReview = () => {
 
               {/* Positives */}
               {result.positives?.length > 0 && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
                     <ThumbsUp className="w-3.5 h-3.5 text-green-400" />
                     What's Good

@@ -4,6 +4,7 @@ import AIToolLayout from "../../components/common/AIToolLayout.jsx";
 import CreditBadge from "../../components/common/CreditBadge.jsx";
 import LoadingSpinner from "../../components/common/LoadingSpinner.jsx";
 import ResultBox from "../../components/common/ResultBox.jsx";
+import CodeBlock from "@/components/common/CodeBlock.jsx";
 import useCreditStore from "../../store/creditStore.js";
 import api from "../../api/axios.js";
 import { Bug, Wrench, FileText } from "lucide-react";
@@ -81,13 +82,13 @@ const CodeDebugger = () => {
 
           <button
             onClick={handleSubmit}
-            disabled={loading || !form.prompt?.trim()}
+            disabled={loading || !form.code?.trim()}
             className="w-full py-2.5 bg-white hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? (
-              <LoadingSpinner size="sm" text="Generating..." />
+              <LoadingSpinner size="sm" text="Debugging..." />
             ) : (
-              "Generate"
+              "Debug Code"
             )}
           </button>
 
@@ -100,7 +101,7 @@ const CodeDebugger = () => {
           {/* Structured debug result */}
           {result && typeof result === "object" && (
             <div className="space-y-3">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+              <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                 <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2 flex items-center gap-2">
                   <Bug className="w-3.5 h-3.5 text-red-400" />
                   Issue Found
@@ -108,18 +109,21 @@ const CodeDebugger = () => {
                 <p className="text-sm text-red-300">{result.issue}</p>
               </div>
 
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+              <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                 <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2 flex items-center gap-2">
                   <Wrench className="w-3.5 h-3.5 text-green-400" />
                   Fixed Code
                 </h3>
-                <pre className="text-xs text-gray-200 bg-gray-950 p-3 rounded-lg overflow-x-auto border border-gray-700 font-mono">
-                  {result.fixedCode}
+                <pre className="text-xs text-gray-200 bg-zinc-950 p-3 rounded-lg overflow-x-auto border border-gray-700 font-mono">
+                
+                  <ResultBox result={result.fixedCode} /> {/*For better formatting if it's a long code block*/}
+                  
+                  
                 </pre>
               </div>
 
               {result.explanation && (
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                <div className="bg-zinc-900 border border-gray-800 rounded-xl p-4">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FileText className="w-3.5 h-3.5 text-blue-400" />
                     Explanation

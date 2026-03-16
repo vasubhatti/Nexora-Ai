@@ -63,9 +63,9 @@ const CodeRefactor = () => {
             className="w-full py-2.5 bg-white hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? (
-              <LoadingSpinner size="sm" text="Generating..." />
+              <LoadingSpinner size="sm" text="Refactoring..." />
             ) : (
-              "Generate"
+              "Refactor Code"
             )}
           </button>
           {error && <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg"><p className="text-red-400 text-sm">{error}</p></div>}
