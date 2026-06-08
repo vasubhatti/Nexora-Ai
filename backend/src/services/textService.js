@@ -6,24 +6,12 @@ You are knowledgeable, friendly, and provide clear and accurate responses.
 Always be concise but thorough. If you don't know something, say so honestly.`;
 
   const messages = [
+    { role: "system", content: systemPrompt },
     ...conversationHistory,
     { role: "user", content: message },
   ];
 
-  const response = await fetch("https://text.pollinations.ai/openai", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "openai",
-      system: systemPrompt,
-      messages,
-      private: true,
-    }),
-  });
-
-  if (!response.ok) throw new AppError("AI chat error", 500);
-  const data = await response.json();
-  return data.choices[0].message.content;
+  return await callAI(systemPrompt, message, { messages });
 };
 
 export const generateContent = async (prompt, tone = "professional", length = "medium") => {
